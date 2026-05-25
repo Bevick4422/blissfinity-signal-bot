@@ -1,0 +1,38 @@
+import asyncio
+
+from config import PAIRS, TIMEFRAME
+from scanner import fetch_data
+from patterns import detect_signal
+from telegram_bot import send_message
+
+async def run_bot():
+
+    for pair in PAIRS:
+
+        try:
+
+            df = fetch_data(pair, TIMEFRAME)
+
+            signal = detect_signal(df)
+
+            if signal:
+
+                message = f"""
+🚀 BLISSFINITY SIGNAL
+
+Pair: {pair}
+
+Direction: {signal}
+
+Timeframe: 4H
+"""
+
+                print(message)
+
+                await send_message(message)
+
+        except Exception as e:
+
+            print(f"Error with {pair}: {e}")
+
+asyncio.run(run_bot())
