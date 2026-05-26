@@ -14,10 +14,15 @@ print("==============================\n")
 # TELEGRAM SETTINGS
 # =========================================
 
-TOKEN = "PASTE_YOUR_BOT_TOKEN"
+import os
 
-CHAT_ID = "6953501418"
-
+TOKEN = os.getenv(
+    "TELEGRAM_TOKEN"
+)
+import os
+CHAT_ID = os.getenv(
+    "TELEGRAM_CHAT_ID"
+)
 # =========================================
 # TELEGRAM FUNCTION
 # =========================================

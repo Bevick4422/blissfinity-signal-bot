@@ -16,9 +16,15 @@ print("==============================\n")
 # TELEGRAM SETTINGS
 # =========================================
 
-TOKEN = "8893369285:AAHvZEWi9F6g5QpiXfpSLFo8YgV0TiTevIU"
+import os
 
-CHAT_ID = "6953501418"
+TOKEN = os.getenv(
+    "TELEGRAM_TOKEN"
+)
+import os
+CHAT_ID = os.getenv(
+    "TELEGRAM_CHAT_ID"
+)
 
 # =========================================
 # DATABASE
