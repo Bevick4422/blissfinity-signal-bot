@@ -18,8 +18,14 @@ CHAT_ID = os.getenv(
     "TELEGRAM_CHAT_ID"
 )
 
+if not TOKEN:
+
+    raise ValueError(
+        "TELEGRAM_TOKEN environment variable missing"
+    )
+
 bot = Bot(
-    token=TOKEN
+    token=TOKEN.strip()
 )
 
 # =========================================
