@@ -1,5 +1,5 @@
+```python
 import os
-import time
 import asyncio
 import requests
 import pandas as pd
@@ -10,13 +10,8 @@ from telegram import Bot
 # TELEGRAM VARIABLES
 # =========================================
 
-TOKEN = os.getenv(
-    "TELEGRAM_TOKEN"
-)
-
-CHAT_ID = os.getenv(
-    "TELEGRAM_CHAT_ID"
-)
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 if not TOKEN:
 
@@ -24,8 +19,10 @@ if not TOKEN:
         "TELEGRAM_TOKEN environment variable missing"
     )
 
+TOKEN = TOKEN.strip()
+
 bot = Bot(
-    token=TOKEN.strip()
+    token=TOKEN
 )
 
 # =========================================
@@ -39,7 +36,7 @@ SIGNAL_SCORE_THRESHOLD = 2
 MAX_SIGNALS_PER_CYCLE = 4
 
 # =========================================
-# MARKET TOKENS
+# TOKENS
 # =========================================
 
 TOKENS = [
@@ -61,7 +58,7 @@ TOKENS = [
 ]
 
 # =========================================
-# GET MARKET DATA
+# GET CANDLE DATA
 # =========================================
 
 def get_candles(symbol):
@@ -92,6 +89,10 @@ def get_candles(symbol):
 
         if not candles:
 
+            print(
+                f"{symbol} rejected -> No candle data"
+            )
+
             return None
 
         df = pd.DataFrame({
@@ -110,7 +111,7 @@ def get_candles(symbol):
     except Exception as e:
 
         print(
-            f"{symbol} candle error:"
+            f"{symbol} candle fetch error:"
         )
 
         print(e)
@@ -118,7 +119,7 @@ def get_candles(symbol):
         return None
 
 # =========================================
-# SIMPLE BOS DETECTION
+# BULLISH BOS
 # =========================================
 
 def bullish_bos(df):
@@ -142,7 +143,7 @@ def bullish_bos(df):
         return False
 
 # =========================================
-# SIMPLE BEARISH BOS
+# BEARISH BOS
 # =========================================
 
 def bearish_bos(df):
@@ -166,7 +167,7 @@ def bearish_bos(df):
         return False
 
 # =========================================
-# ATR VOLATILITY
+# VOLATILITY CHECK
 # =========================================
 
 def volatility_ok(df):
@@ -203,7 +204,7 @@ def volatility_ok(df):
         return False
 
 # =========================================
-# BUILD SIGNAL SCORE
+# SCORE CALCULATION
 # =========================================
 
 def calculate_score(df, direction):
@@ -232,7 +233,7 @@ def calculate_score(df, direction):
 
                 score += 1
 
-        recent_trend = (
+        trend_strength = (
 
             df["close"].iloc[-1]
             -
@@ -242,24 +243,28 @@ def calculate_score(df, direction):
 
         if direction == "LONG":
 
-            if recent_trend > 0:
+            if trend_strength > 0:
 
                 score += 1
 
         if direction == "SHORT":
 
-            if recent_trend < 0:
+            if trend_strength < 0:
 
                 score += 1
 
-    except:
+    except Exception as e:
 
-        pass
+        print(
+            "Score calculation error:"
+        )
+
+        print(e)
 
     return score
 
 # =========================================
-# SEND TELEGRAM SIGNAL
+# SEND SIGNAL
 # =========================================
 
 async def send_signal(
@@ -307,19 +312,19 @@ Do not risk more than 10% daily.
         )
 
         print(
-            f"{pair} signal sent."
+            f"{pair} signal sent successfully."
         )
 
     except Exception as e:
 
         print(
-            "Telegram send error:"
+            f"{pair} telegram send error:"
         )
 
         print(e)
 
 # =========================================
-# SCAN PAIR
+# SCAN MARKET
 # =========================================
 
 async def scan_pair(pair):
@@ -330,14 +335,10 @@ async def scan_pair(pair):
 
         if df is None:
 
-            print(
-                f"{pair} rejected -> No data"
-            )
-
             return False
 
         # =====================================
-        # LONG SETUP
+        # LONG
         # =====================================
 
         print(
@@ -392,13 +393,13 @@ async def scan_pair(pair):
                 else:
 
                     print(
-                        f"{pair} rejected -> Low score LONG"
+                        f"{pair} rejected -> Low LONG score"
                     )
 
             else:
 
                 print(
-                    f"{pair} rejected -> Low volatility LONG"
+                    f"{pair} rejected -> Low LONG volatility"
                 )
 
         else:
@@ -408,7 +409,7 @@ async def scan_pair(pair):
             )
 
         # =====================================
-        # SHORT SETUP
+        # SHORT
         # =====================================
 
         print(
@@ -463,13 +464,13 @@ async def scan_pair(pair):
                 else:
 
                     print(
-                        f"{pair} rejected -> Low score SHORT"
+                        f"{pair} rejected -> Low SHORT score"
                     )
 
             else:
 
                 print(
-                    f"{pair} rejected -> Low volatility SHORT"
+                    f"{pair} rejected -> Low SHORT volatility"
                 )
 
         else:
@@ -523,3 +524,4 @@ async def main():
 if __name__ == "__main__":
 
     asyncio.run(main())
+```
