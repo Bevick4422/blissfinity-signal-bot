@@ -16,6 +16,10 @@ CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 if not TOKEN:
 
+    raise ValueError(
+        "TELEGRAM_TOKEN missing"
+    )
+
 ```
 raise ValueError(
     "TELEGRAM_TOKEN missing"
