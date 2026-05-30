@@ -1,0 +1,22 @@
+TOKEN = "8893369285:AAHvZEWi9F6g5QpiXfpSLFo8YgV0TiTevIU"
+
+CHAT_ID = "6953501418"
+
+TIMEFRAME = "Hour4"
+
+PAIRS = [
+    "BTC_USDT",
+    "ETH_USDT",
+    "SOL_USDT",
+    "BNB_USDT",
+    "TON_USDT",
+    "ADA_USDT",
+    "AAVE_USDT",
+    "OP_USDT",
+    "BCH_USDT",
+    "ZEC_USDT",
+    "NEAR_USDT",
+    "ONDO_USDT",
+    "WLD_USDT",
+    "DASH_USDT"
+]

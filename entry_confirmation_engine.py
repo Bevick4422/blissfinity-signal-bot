@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 
 from telegram import Bot
-
+print("ENTRY ENGINE FILE LOADED")
 # =========================================
 
 # TELEGRAM
@@ -13,7 +13,8 @@ from telegram import Bot
 
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
+print(f"TOKEN FOUND: {bool(TOKEN)}")
+print(f"CHAT_ID FOUND: {bool(CHAT_ID)}")
 if not TOKEN:
 
     raise ValueError(
@@ -384,7 +385,7 @@ return False
 
 # =========================================
 
-async def main():
+async def main(print("LIGHTWEIGHT SIGNAL ENGINE STARTED")):
 
 ```
 print("\n==============================")
@@ -393,7 +394,7 @@ print("==============================\n")
 
 signals_sent = 0
 
-for pair in TOKENS:
+for pair in TOKENS:print(f"Processing {pair}")
 
     if signals_sent >= MAX_SIGNALS:
 
