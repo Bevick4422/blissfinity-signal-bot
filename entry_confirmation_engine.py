@@ -21,11 +21,10 @@ if not TOKEN:
         "TELEGRAM_TOKEN missing"
     )
 
-```
+
 raise ValueError(
     "TELEGRAM_TOKEN missing"
 )
-```
 
 bot = Bot(
 token=TOKEN.strip()
@@ -49,7 +48,7 @@ MAX_SIGNALS = 4
 
 TOKENS = [
 
-```
+
 "BTC_USDT",
 "ETH_USDT",
 "SOL_USDT",
@@ -75,7 +74,7 @@ TOKENS = [
 
 def get_data(symbol):
 
-```
+
 try:
 
     url = (
@@ -126,7 +125,7 @@ except Exception as e:
     print(e)
 
     return None
-```
+
 
 # =========================================
 
@@ -136,7 +135,7 @@ except Exception as e:
 
 def bullish_setup(df):
 
-```
+
 try:
 
     latest_close = df["close"].iloc[-1]
@@ -160,7 +159,7 @@ try:
 except:
 
     return False
-```
+
 
 # =========================================
 
@@ -170,7 +169,6 @@ except:
 
 def bearish_setup(df):
 
-```
 try:
 
     latest_close = df["close"].iloc[-1]
@@ -194,7 +192,7 @@ try:
 except:
 
     return False
-```
+
 
 # =========================================
 
@@ -204,7 +202,6 @@ except:
 
 async def send_signal(
 
-```
 pair,
 direction,
 entry,
@@ -215,7 +212,7 @@ tp2
 
 ):
 
-```
+
 try:
 
     message = f"""
@@ -240,7 +237,7 @@ Maximum daily risk = 10%
 
 """
 
-```
+
     await bot.send_message(
 
         chat_id=CHAT_ID,
@@ -259,7 +256,7 @@ except Exception as e:
     )
 
     print(e)
-```
+
 
 # =========================================
 
@@ -269,7 +266,7 @@ except Exception as e:
 
 async def scan_pair(pair):
 
-```
+
 try:
 
     df = get_data(pair)
@@ -377,7 +374,7 @@ except Exception as e:
     print(e)
 
 return False
-```
+
 
 # =========================================
 
@@ -387,7 +384,7 @@ return False
 
 async def main(print("LIGHTWEIGHT SIGNAL ENGINE STARTED")):
 
-```
+
 print("\n==============================")
 print("LIGHTWEIGHT SIGNAL ENGINE")
 print("==============================\n")
@@ -409,7 +406,7 @@ for pair in TOKENS:print(f"Processing {pair}")
     await asyncio.sleep(1)
 
 print("\nScan cycle completed.\n")
-```
+
 
 # =========================================
 
@@ -419,6 +416,5 @@ print("\nScan cycle completed.\n")
 
 if **name** == "**main**":
 
-```
 asyncio.run(main())
-```
+
