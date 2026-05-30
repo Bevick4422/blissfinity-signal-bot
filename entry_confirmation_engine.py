@@ -156,7 +156,7 @@ def bullish_setup(df):
 
     return breakout and bullish_candle
 
-except:
+
 
     return False
 
@@ -189,7 +189,7 @@ def bearish_setup(df):
 
     return breakdown and bearish_candle
 
-except:
+
 
     return False
 
