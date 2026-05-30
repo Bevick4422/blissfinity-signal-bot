@@ -7,9 +7,7 @@ from zoneinfo import ZoneInfo
 # TIMEZONE
 # =========================================
 
-LAGOS_TZ = ZoneInfo(
-    "Africa/Lagos"
-)
+LAGOS_TZ = ZoneInfo("Africa/Lagos")
 
 # =========================================
 # DISPLAY
@@ -25,19 +23,38 @@ print("==============================\n")
 
 def run_engine(name, command):
 
-    print("==============================")
-    print(f"RUNNING {name}")
-    print("==============================\n")
+    print("\n========================================")
+    print(f"STARTING: {name}")
+    print(f"TIME: {datetime.now(LAGOS_TZ)}")
+    print("========================================")
 
-    result = os.system(command)
+    try:
 
-    if result != 0:
+        result = os.system(command)
 
-        print(f"{name} exited with errors.\n")
+        print(
+            f"{name} EXIT CODE: {result}"
+        )
 
-    else:
+        if result != 0:
 
-        print(f"{name} completed.\n")
+            print(
+                f"{name} FAILED\n"
+            )
+
+        else:
+
+            print(
+                f"{name} COMPLETED\n"
+            )
+
+    except Exception as e:
+
+        print(
+            f"{name} CRASHED:"
+        )
+
+        print(e)
 
 # =========================================
 # MAIN LOOP
@@ -47,16 +64,12 @@ while True:
 
     try:
 
-        # =====================================
-        # CURRENT TIME
-        # =====================================
-
         now = datetime.now(
             LAGOS_TZ
         )
 
         print(
-            f"\nCurrent Nigeria Time: {now}\n"
+            f"\nCURRENT NIGERIA TIME: {now}\n"
         )
 
         # =====================================
@@ -66,11 +79,11 @@ while True:
         if now.weekday() == 6:
 
             print(
-                "Sunday detected."
+                "SUNDAY DETECTED"
             )
 
             print(
-                "Bot paused for 1 hour...\n"
+                "PAUSING FOR 1 HOUR\n"
             )
 
             time.sleep(3600)
@@ -78,7 +91,7 @@ while True:
             continue
 
         # =====================================
-        # DAILY BIAS ENGINE
+        # DAILY BIAS
         # =====================================
 
         run_engine(
@@ -99,9 +112,17 @@ while True:
         # ENTRY ENGINE
         # =====================================
 
+        print(
+            "\nABOUT TO RUN ENTRY ENGINE\n"
+        )
+
         run_engine(
             "ENTRY CONFIRMATION ENGINE",
             "python entry_confirmation_engine.py"
+        )
+
+        print(
+            "\nENTRY ENGINE FINISHED\n"
         )
 
         # =====================================
@@ -114,7 +135,7 @@ while True:
         )
 
         # =====================================
-        # PERFORMANCE ANALYTICS
+        # PERFORMANCE
         # =====================================
 
         run_engine(
@@ -123,12 +144,20 @@ while True:
         )
 
         # =====================================
-        # LOOP TIMER
+        # LOOP COMPLETE
         # =====================================
 
-        print("==============================")
-        print("CYCLE COMPLETED")
-        print("==============================\n")
+        print(
+            "\n========================================"
+        )
+
+        print(
+            "FULL BOT CYCLE COMPLETE"
+        )
+
+        print(
+            "========================================\n"
+        )
 
         print(
             "Sleeping for 5 minutes...\n"
@@ -139,7 +168,7 @@ while True:
     except KeyboardInterrupt:
 
         print(
-            "\nBot stopped manually.\n"
+            "\nBOT STOPPED MANUALLY\n"
         )
 
         break
