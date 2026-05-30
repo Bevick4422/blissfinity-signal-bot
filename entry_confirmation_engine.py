@@ -75,7 +75,7 @@ TOKENS = [
 def get_data(symbol):
 
 
-try:
+
 
     url = (
 
