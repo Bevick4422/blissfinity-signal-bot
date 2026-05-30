@@ -249,7 +249,7 @@ Maximum daily risk = 10%
         f"{pair} {direction} signal sent."
     )
 
-except Exception as e:
+
 
     print(
         f"{pair} telegram error:"
@@ -365,7 +365,7 @@ async def scan_pair(pair):
         f"{pair} rejected -> no setup"
     )
 
-except Exception as e:
+
 
     print(
         f"{pair} scan error:"
