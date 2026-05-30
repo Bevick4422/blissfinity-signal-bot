@@ -116,7 +116,7 @@ def get_data(symbol):
 
     return df
 
-except Exception as e:
+
 
     print(
         f"{symbol} data error:"
