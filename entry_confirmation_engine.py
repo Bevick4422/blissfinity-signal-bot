@@ -136,7 +136,7 @@ def get_data(symbol):
 def bullish_setup(df):
 
 
-try:
+
 
     latest_close = df["close"].iloc[-1]
 
@@ -169,7 +169,7 @@ except:
 
 def bearish_setup(df):
 
-try:
+
 
     latest_close = df["close"].iloc[-1]
 
@@ -208,15 +208,15 @@ entry,
 stoploss,
 tp1,
 tp2
-```
+
 
 ):
 
 
-try:
+
 
     message = f"""
-```
+
 
 🚨 BLISSFINITY SIGNAL
 
@@ -267,7 +267,7 @@ except Exception as e:
 async def scan_pair(pair):
 
 
-try:
+
 
     df = get_data(pair)
 
