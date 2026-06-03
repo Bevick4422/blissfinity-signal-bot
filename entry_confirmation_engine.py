@@ -28,7 +28,7 @@ bot = Bot(token=TOKEN.strip())
 # SETTINGS
 # =========================================
 
-TIMEFRAME = "4h"
+TIMEFRAME = "Min60"
 MAX_SIGNALS = 4
 
 # =========================================
