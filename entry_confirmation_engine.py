@@ -2,222 +2,162 @@ import os
 import asyncio
 import requests
 import pandas as pd
-
 from telegram import Bot
+
 print("ENTRY ENGINE FILE LOADED")
+
 # =========================================
-
 # TELEGRAM
-
 # =========================================
 
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
 print(f"TOKEN FOUND: {bool(TOKEN)}")
 print(f"CHAT_ID FOUND: {bool(CHAT_ID)}")
+
 if not TOKEN:
+    raise ValueError("TELEGRAM_TOKEN missing")
 
-    raise ValueError(
-        "TELEGRAM_TOKEN missing"
-    )
+if not CHAT_ID:
+    raise ValueError("TELEGRAM_CHAT_ID missing")
 
-
-raise ValueError(
-    "TELEGRAM_TOKEN missing"
-)
-
-bot = Bot(
-token=TOKEN.strip()
-)
+bot = Bot(token=TOKEN.strip())
 
 # =========================================
-
 # SETTINGS
-
 # =========================================
 
-TIMEFRAME = "15m"
-
+TIMEFRAME = "4h"
 MAX_SIGNALS = 4
 
 # =========================================
-
-# MARKET TOKENS
-
+# TOKENS
 # =========================================
 
 TOKENS = [
-
-
-"BTC_USDT",
-"ETH_USDT",
-"SOL_USDT",
-"DOGE_USDT",
-"XRP_USDT",
-"LINK_USDT",
-"AVAX_USDT",
-"WLD_USDT",
-"PENDLE_USDT",
-"NEAR_USDT",
-"MORPHO_USDT",
-"RON_USDT",
-"PIPPIN_USDT"
-
-
+    "BTC_USDT",
+    "ETH_USDT",
+    "SOL_USDT",
+    "DOGE_USDT",
+    "XRP_USDT",
+    "LINK_USDT",
+    "AVAX_USDT",
+    "WLD_USDT",
+    "PENDLE_USDT",
+    "NEAR_USDT",
+    "MORPHO_USDT",
+    "RON_USDT",
+    "PIPPIN_USDT"
 ]
 
 # =========================================
-
-# GET MARKET DATA
-
+# GET DATA
 # =========================================
 
 def get_data(symbol):
 
+    try:
 
+        url = (
+            f"https://contract.mexc.com/api/v1/contract/kline/{symbol}"
+            f"?interval={TIMEFRAME}"
+        )
 
+        response = requests.get(
+            url,
+            timeout=10
+        )
 
-    url = (
+        data = response.json()
 
-        "https://contract.mexc.com"
+        candles = data.get("data")
 
-        f"/api/v1/contract/kline/{symbol}"
+        if not candles:
+            return None
 
-        f"?interval={TIMEFRAME}"
+        df = pd.DataFrame({
+            "open": candles["open"],
+            "high": candles["high"],
+            "low": candles["low"],
+            "close": candles["close"]
+        })
 
-    )
+        return df.astype(float)
 
-    response = requests.get(
-        url,
-        timeout=10
-    )
+    except Exception as e:
 
-    data = response.json()
-
-    candles = data.get(
-        "data",
-        {}
-    )
-
-    if not candles:
+        print(f"{symbol} data error:")
+        print(e)
 
         return None
 
-    df = pd.DataFrame({
-
-        "open": candles["open"],
-        "high": candles["high"],
-        "low": candles["low"],
-        "close": candles["close"]
-
-    })
-
-    df = df.astype(float)
-
-    return df
-
-
-
-    print(
-        f"{symbol} data error:"
-    )
-
-    print(e)
-
-    return None
-
-
 # =========================================
-
 # LONG SETUP
-
 # =========================================
 
 def bullish_setup(df):
 
+    try:
 
+        latest_close = df["close"].iloc[-1]
+        latest_open = df["open"].iloc[-1]
 
+        previous_high = (
+            df["high"]
+            .iloc[-6:-1]
+            .max()
+        )
 
-    latest_close = df["close"].iloc[-1]
+        return (
+            latest_close > previous_high
+            and latest_close > latest_open
+        )
 
-    previous_high = (
-
-        df["high"]
-        .iloc[-5:-1]
-        .max()
-
-    )
-
-    latest_open = df["open"].iloc[-1]
-
-    breakout = latest_close > previous_high
-
-    bullish_candle = latest_close > latest_open
-
-    return breakout and bullish_candle
-
-
-
-    return False
-
+    except:
+        return False
 
 # =========================================
-
 # SHORT SETUP
-
 # =========================================
 
 def bearish_setup(df):
 
+    try:
 
+        latest_close = df["close"].iloc[-1]
+        latest_open = df["open"].iloc[-1]
 
-    latest_close = df["close"].iloc[-1]
+        previous_low = (
+            df["low"]
+            .iloc[-6:-1]
+            .min()
+        )
 
-    previous_low = (
+        return (
+            latest_close < previous_low
+            and latest_close < latest_open
+        )
 
-        df["low"]
-        .iloc[-5:-1]
-        .min()
-
-    )
-
-    latest_open = df["open"].iloc[-1]
-
-    breakdown = latest_close < previous_low
-
-    bearish_candle = latest_close < latest_open
-
-    return breakdown and bearish_candle
-
-
-
-    return False
-
+    except:
+        return False
 
 # =========================================
-
-# SEND SIGNAL
-
+# TELEGRAM SIGNAL
 # =========================================
 
 async def send_signal(
-
-pair,
-direction,
-entry,
-stoploss,
-tp1,
-tp2
-
-
+    pair,
+    direction,
+    entry,
+    stoploss,
+    tp1,
+    tp2
 ):
 
+    try:
 
-
-
-    message = f"""
-
-
+        message = f"""
 🚨 BLISSFINITY SIGNAL
 
 Pair: {pair}
@@ -226,7 +166,7 @@ Direction: {direction}
 
 Entry: {entry}
 
-Stoploss: {stoploss}
+Stop Loss: {stoploss}
 
 TP1: {tp1}
 
@@ -234,187 +174,118 @@ TP2: {tp2}
 
 Risk Reminder:
 Maximum daily risk = 10%
-
 """
 
+        await bot.send_message(
+            chat_id=CHAT_ID,
+            text=message
+        )
 
-    await bot.send_message(
+        print(f"{pair} {direction} signal sent.")
 
-        chat_id=CHAT_ID,
-        text=message
+    except Exception as e:
 
-    )
-
-    print(
-        f"{pair} {direction} signal sent."
-    )
-
-
-
-    print(
-        f"{pair} telegram error:"
-    )
-
-    print(e)
-
+        print(f"{pair} telegram error:")
+        print(e)
 
 # =========================================
-
 # SCAN PAIR
-
 # =========================================
 
 async def scan_pair(pair):
 
+    try:
 
+        df = get_data(pair)
 
+        if df is None:
 
-    df = get_data(pair)
+            print(f"{pair} -> no data")
 
-    if df is None:
+            return False
 
-        print(
-            f"{pair} rejected -> no data"
-        )
+        print(f"Scanning {pair}...")
+
+        latest_close = df["close"].iloc[-1]
+
+        if bullish_setup(df):
+
+            entry = round(latest_close, 4)
+            stoploss = round(entry * 0.985, 4)
+            tp1 = round(entry * 1.02, 4)
+            tp2 = round(entry * 1.04, 4)
+
+            await send_signal(
+                pair,
+                "LONG",
+                entry,
+                stoploss,
+                tp1,
+                tp2
+            )
+
+            return True
+
+        elif bearish_setup(df):
+
+            entry = round(latest_close, 4)
+            stoploss = round(entry * 1.015, 4)
+            tp1 = round(entry * 0.98, 4)
+            tp2 = round(entry * 0.96, 4)
+
+            await send_signal(
+                pair,
+                "SHORT",
+                entry,
+                stoploss,
+                tp1,
+                tp2
+            )
+
+            return True
+
+        print(f"{pair} -> no setup")
 
         return False
 
-    print(
-        f"Scanning {pair}..."
-    )
+    except Exception as e:
 
-    # =====================================
-    # LONG
-    # =====================================
+        print(f"{pair} scan error:")
+        print(e)
 
-    if bullish_setup(df):
-
-        entry = round(
-            df["close"].iloc[-1],
-            4
-        )
-
-        stoploss = round(
-            entry * 0.985,
-            4
-        )
-
-        tp1 = round(
-            entry * 1.02,
-            4
-        )
-
-        tp2 = round(
-            entry * 1.04,
-            4
-        )
-
-        await send_signal(
-
-            pair,
-            "LONG",
-            entry,
-            stoploss,
-            tp1,
-            tp2
-
-        )
-
-        return True
-
-    # =====================================
-    # SHORT
-    # =====================================
-
-    if bearish_setup(df):
-
-        entry = round(
-            df["close"].iloc[-1],
-            4
-        )
-
-        stoploss = round(
-            entry * 1.015,
-            4
-        )
-
-        tp1 = round(
-            entry * 0.98,
-            4
-        )
-
-        tp2 = round(
-            entry * 0.96,
-            4
-        )
-
-        await send_signal(
-
-            pair,
-            "SHORT",
-            entry,
-            stoploss,
-            tp1,
-            tp2
-
-        )
-
-        return True
-
-    print(
-        f"{pair} rejected -> no setup"
-    )
-
-
-
-    print(
-        f"{pair} scan error:"
-    )
-
-    print(e)
-
-return False
-
+        return False
 
 # =========================================
-
-# MAIN ENGINE
-
+# MAIN
 # =========================================
 
-async def main(print("LIGHTWEIGHT SIGNAL ENGINE STARTED")):
+async def main():
 
+    print("\n==============================")
+    print("LIGHTWEIGHT SIGNAL ENGINE")
+    print("==============================\n")
 
-print("\n==============================")
-print("LIGHTWEIGHT SIGNAL ENGINE")
-print("==============================\n")
+    signals_sent = 0
 
-signals_sent = 0
+    for pair in TOKENS:
 
-for pair in TOKENS:print(f"Processing {pair}")
+        print(f"Processing {pair}")
 
-    if signals_sent >= MAX_SIGNALS:
+        if signals_sent >= MAX_SIGNALS:
+            break
 
-        break
+        result = await scan_pair(pair)
 
-    result = await scan_pair(pair)
+        if result:
+            signals_sent += 1
 
-    if result:
+        await asyncio.sleep(1)
 
-        signals_sent += 1
-
-    await asyncio.sleep(1)
-
-print("\nScan cycle completed.\n")
-
+    print("\nScan cycle completed.\n")
 
 # =========================================
-
 # START
-
 # =========================================
 
-if **name** == "**main**":
-
-asyncio.run(main())
-
+if __name__ == "__main__":
+    asyncio.run(main())
