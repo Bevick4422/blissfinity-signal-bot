@@ -8,8 +8,8 @@ import asyncio
 # TELEGRAM SETTINGS
 # =========================================
 
-TOKEN = "8893369285:AAHvZEWi9F6g5QpiXfpSLFo8YgV0TiTevIU"
-CHAT_ID = "6953501418"
+TOKEN = "8893369285:AAHi1aRkGG8AJ5M66C_cNVGAmTOn_gvtM9M"
+CHAT_ID = "-5191516408"
 
 # =========================================
 # FETCH MARKET DATA
