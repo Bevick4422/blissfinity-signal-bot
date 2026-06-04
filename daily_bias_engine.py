@@ -31,7 +31,7 @@ if today == 6:
 # TELEGRAM SETTINGS
 # =========================================
 
-TOKEN = "PASTE_YOUR_BOT_TOKEN_HERE"
+TOKEN = "8893369285:AAHi1aRkGG8AJ5M66C_cNVGAmTOn_gvtM9M"
 
 CHAT_ID = "6953501418"
 
