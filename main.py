@@ -1,7 +1,7 @@
 from telegram import Bot
 import asyncio
 
-TOKEN = "8893369285:AAHvZEWi9F6g5QpiXfpSLFo8YgV0TiTevIU"
+TOKEN = "8893369285:AAHi1aRkGG8AJ5M66C_cNVGAmTOn_gvtM9M"
 CHAT_ID = "6953501418"
 
 async def send_message():
