@@ -9,7 +9,7 @@ import asyncio
 # =========================================
 
 TOKEN = "8893369285:AAHi1aRkGG8AJ5M66C_cNVGAmTOn_gvtM9M"
-CHAT_ID = "-5191516408"
+CHAT_ID = "6953501418"
 
 # =========================================
 # FETCH MARKET DATA
